@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Scroll to Rotate 3D Model</title>
+  <style>
+    body, html {
+      margin: 0;
+      height: 200vh; /* Make scrollable */
+      overflow-y: scroll;
+    }
+    canvas {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Load Three.js & GLTFLoader from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/examples/js/loaders/GLTFLoader.js"></script>
+
+  <script>
+    let model;
+
+    // Basic scene setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Lighting
+    const light = new THREE.HemisphereLight(0xffffff, 0x444444, 1);
+    scene.add(light);
+
+    // Load the GLB model
+    const loader = new THREE.GLTFLoader();
+    loader.load(
+      'hairdryer glb.glb', // Replace this with your actual model filename
+      function (gltf) {
+        model = gltf.scene;
+        model.scale.set(1, 1, 1); // Adjust as needed
+        scene.add(model);
+      },
+      undefined,
+      function (error) {
+        console.error('Error loading model:', error);
+      }
+    );
+
+    camera.position.z = 5;
+
+    // Scroll to rotate
+    window.addEventListener('scroll', () => {
+      if (model) {
+        const scrollY = window.scrollY;
+        const maxScroll = document.body.scrollHeight - window.innerHeight;
+        const scrollPercent = scrollY / maxScroll;
+        model.rotation.y = scrollPercent * Math.PI * 2; // full rotation
+      }
+    });
+
+    // Animate
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Resize handler
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
