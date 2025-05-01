@@ -18,11 +18,11 @@
   </style>
 </head>
 <body>
-  <!-- Load Three.js & GLTFLoader from CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/examples/js/loaders/GLTFLoader.js"></script>
+  <!-- Load Three.js and GLTFLoader as ES Modules -->
+  <script type="module">
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.module.js';
+    import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.150.1/examples/jsm/loaders/GLTFLoader.js';
 
-  <script>
     let model;
 
     // Basic scene setup
@@ -42,7 +42,7 @@
     scene.add(light);
 
     // Load the GLB model
-    const loader = new THREE.GLTFLoader();
+    const loader = new GLTFLoader();
     loader.load(
       'hairdryer glb.glb', // Replace this with your actual model filename
       function (gltf) {
